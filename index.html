@@ -132,12 +132,12 @@
   $stopButton = document.getElementById('stop-button')
   $startButton = document.getElementById('start-button')
   $clearButton = document.getElementById('clear-button')
-  $stopButton.addEventListener('click', () => clearInterval(interval));
-  $startButton.addEventListener('click', () => interval = setInterval(run, 10));
+  $stopButton.addEventListener('click', () => clearInterval(interval))
+  $startButton.addEventListener('click', () => interval = setInterval(run, 10))
   $clearButton.addEventListener('click', () => {
     rows = []
     render(rows)
-  });
+  })
 </script>
 
 </html>
