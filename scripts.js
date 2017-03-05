@@ -34,7 +34,7 @@ const rules = [
   }
 ];
 const width = 100;
-const startingCondition = 'singleOn';
+let startingCondition = 'singleOn';
 let rows = [];
 
 function genRow(rows, width, rules) {
@@ -121,6 +121,7 @@ $startButton.addEventListener('click', () => interval = setInterval(run, 10));
 $clearButton.addEventListener('click', () => {
   rows = [];
   render(rows);
+  run();
 });
 rules.forEach((r, i) => document.getElementById(`rule-${i}`).checked = r.rule);
 Array.prototype.forEach.call(
@@ -130,3 +131,13 @@ Array.prototype.forEach.call(
     rules[index].rule = e.target.checked;
   })
 );
+document.getElementById('random-check').addEventListener('click', e => {
+  if (e.target.checked) {
+    startingCondition = 'random';
+  } else {
+    startingCondition = 'singleOn';
+  }
+  rows = [];
+  render(rows);
+  run();
+});
