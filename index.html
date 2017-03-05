@@ -1,0 +1,143 @@
+<html>
+
+<head>
+  <style>
+    .row div {
+      height: 8px;
+      display: inline-block;
+      width: 8px;
+    }
+    
+    .row div.on {
+      background-color: red;
+    }
+    
+    .row div.off {
+      background-color: #99CCFF;
+    }
+    
+    body {
+      margin: 0
+    }
+  </style>
+</head>
+
+<body>
+  <button id="stop-button">Stop</button>
+  <button id="start-button">Start</button>
+  <button id="clear-button">Clear</button>
+  <div id="container"></div>
+</body>
+<script>
+  // Automata CORE
+  const rules = [{
+      pattern: [true, true, true],
+      rule: true
+    },
+    {
+      pattern: [true, true, false],
+      rule: true
+    },
+    {
+      pattern: [true, false, true],
+      rule: true
+    },
+    {
+      pattern: [true, false, false],
+      rule: false
+    },
+    {
+      pattern: [false, true, true],
+      rule: false
+    },
+    {
+      pattern: [false, true, false],
+      rule: false
+    },
+    {
+      pattern: [false, false, true],
+      rule: false
+    },
+    {
+      pattern: [false, false, false],
+      rule: true
+    },
+  ]
+  const width = 100
+  let rows = []
+
+  function genRow(rows, width, rules) {
+    const newRow = []
+    for (let i = 0; i < width; i++) {
+      // Randomize first row
+      if (rows.length === 0) {
+        newRow.push(Math.random() >= 0.5)
+      } else {
+        const prevRow = rows[rows.length - 1]
+        const prevSelf = prevRow[i]
+        const left = prevRow[i === 0 ? prevRow.length - 1 : i - 1]
+        const right = prevRow[i === prevRow.length - 1 ? prevRow[0] : i + 1]
+        const prevArr = [left, prevSelf, right]
+        const res = rules.reduce((prev, curr) => {
+          const matchesPattern = JSON.stringify(curr.pattern) === JSON.stringify(prevArr)
+          if (matchesPattern) {
+            return curr.rule
+          }
+          return prev
+        }, false)
+        newRow.push(res)
+      }
+    }
+    return rows.concat([newRow])
+  }
+
+  // Rendering Automata
+  function renderCell(on) {
+    const cell = document.createElement('div')
+    cell.classList.add('cell')
+    cell.classList.add(on ? 'on' : 'off')
+    return cell
+  }
+
+  function renderRow(cells) {
+    const row = document.createElement('div')
+    row.classList.add('row')
+    cells.forEach((cell) => row.appendChild(renderCell(cell)))
+    return row
+  }
+
+  function render(rows) {
+    const $container = document.getElementById('container')
+    const currentRows = document.getElementsByClassName('row')
+    if (rows.length === 0) {
+      $container.innerHTML = ''
+    }
+    rows.forEach((row, i) => {
+      if (i > currentRows.length) {
+        const renderedRow = renderRow(row)
+        $container.appendChild(renderedRow)
+      }
+    })
+  }
+
+  function run() {
+    rows = genRow(rows, width, rules)
+    render(rows)
+  }
+
+  run()
+  let interval = setInterval(run, 10)
+
+  // Handling UI
+  $stopButton = document.getElementById('stop-button')
+  $startButton = document.getElementById('start-button')
+  $clearButton = document.getElementById('clear-button')
+  $stopButton.addEventListener('click', () => clearInterval(interval));
+  $startButton.addEventListener('click', () => interval = setInterval(run, 10));
+  $clearButton.addEventListener('click', () => {
+    rows = []
+    render(rows)
+  });
+</script>
+
+</html>
