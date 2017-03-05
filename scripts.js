@@ -34,19 +34,29 @@ const rules = [
   }
 ];
 const width = 100;
+const startingCondition = 'singleOn';
 let rows = [];
 
 function genRow(rows, width, rules) {
   const newRow = [];
   for (let i = 0; i < width; i++) {
-    // Randomize first row
+    // Make first row
     if (rows.length === 0) {
-      newRow.push(Math.random() >= 0.5);
+      if (startingCondition === 'random') {
+        newRow.push(Math.random() >= 0.5);
+      }
+      if (startingCondition === 'singleOn') {
+        if (i === width / 2) {
+          newRow.push(true);
+        } else {
+          newRow.push(false);
+        }
+      }
     } else {
       const prevRow = rows[rows.length - 1];
       const prevSelf = prevRow[i];
       const left = prevRow[i === 0 ? prevRow.length - 1 : i - 1];
-      const right = prevRow[i === prevRow.length - 1 ? prevRow[0] : i + 1];
+      const right = prevRow[i === prevRow.length - 1 ? 0 : i + 1];
       const prevArr = [left, prevSelf, right];
       const res = rules.reduce(
         (prev, curr) => {
@@ -87,7 +97,7 @@ function render(rows) {
     $container.innerHTML = '';
   }
   rows.forEach((row, i) => {
-    if (i > currentRows.length) {
+    if (i > currentRows.length || currentRows.length === 0) {
       const renderedRow = renderRow(row);
       $container.appendChild(renderedRow);
     }
