@@ -17,16 +17,50 @@
     }
     
     body {
-      margin: 0
+      margin: 10
+    }
+    
+    #app {
+      display: flex;
+    }
+    
+    #container,
+    #ui {
+      flex: 1;
+    }
+    
+    #rule-container {
+      margin-left: 10px;
+    }
+    
+    .rule-check {
+      margin: 0 16px;
     }
   </style>
 </head>
 
 <body>
-  <button id="stop-button">Stop</button>
-  <button id="start-button">Start</button>
-  <button id="clear-button">Clear</button>
-  <div id="container"></div>
+  <div id="app">
+    <div id="container"></div>
+    <div id="ui">
+      <button id="stop-button">Stop</button>
+      <button id="start-button">Start</button>
+      <button id="clear-button">Clear</button>
+      <p><strong>Set Rules</strong></p>
+      <img src="rules.gif">
+      <br />
+      <div id="rule-container">
+        <input type="checkbox" id="rule-0" class="rule-check" />
+        <input type="checkbox" id="rule-1" class="rule-check" />
+        <input type="checkbox" id="rule-2" class="rule-check" />
+        <input type="checkbox" id="rule-3" class="rule-check" />
+        <input type="checkbox" id="rule-4" class="rule-check" />
+        <input type="checkbox" id="rule-5" class="rule-check" />
+        <input type="checkbox" id="rule-6" class="rule-check" />
+        <input type="checkbox" id="rule-7" class="rule-check" />
+      </div>
+    </div>
+  </div>
 </body>
 <script>
   // Automata CORE
@@ -126,7 +160,7 @@
   }
 
   run()
-  let interval = setInterval(run, 10)
+  let interval
 
   // Handling UI
   $stopButton = document.getElementById('stop-button')
@@ -138,6 +172,12 @@
     rows = []
     render(rows)
   })
+  rules.forEach((r, i) => document.getElementById(`rule-${i}`).checked = r.rule)
+  Array.prototype.forEach.call(document.getElementsByClassName('rule-check'), (elem) => elem.addEventListener('click',
+    (e) => {
+      const index = parseInt(e.target.id.replace('rule-', ''))
+      rules[index].rule = e.target.checked
+    }))
 </script>
 
 </html>
